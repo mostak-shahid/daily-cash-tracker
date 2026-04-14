@@ -131,8 +131,14 @@ class DCT_Ajax {
         if ( $data['transaction_type'] === 'expense' && empty( $data['from_stakeholder_id'] ) ) {
             $this->err( 'Who paid this expense?' ); return;
         }
-        $id = DCT_DB::insert_transaction( $data );
-        $this->ok( array( 'id' => $id, 'message' => 'Transaction saved.' ) );
+
+        if ( ! empty( $data['id'] ) ) {
+            DCT_DB::update_transaction( intval( $data['id'] ), $data );
+            $this->ok( array( 'id' => intval( $data['id'] ), 'message' => 'Transaction updated.' ) );
+        } else {
+            $id = DCT_DB::insert_transaction( $data );
+            $this->ok( array( 'id' => $id, 'message' => 'Transaction saved.' ) );
+        }
     }
 
     public function delete_transaction() {

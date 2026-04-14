@@ -343,10 +343,13 @@
                     const $btn = $('#dct-txn-form .dct-btn-accent');
                     $btn.prop('disabled', true);
                     const data = {
+                        id:                  $('#dct-txn-id').val(),
                         project_id:          $('#dct-txn-project').val(),
                         from_stakeholder_id: $('#dct-txn-from').val(),
                         to_stakeholder_id:   $('#dct-txn-to').val(),
                         transaction_type:    $('#dct-txn-type').val(),
+                        category:            $('#dct-txn-category').val(),
+                        phase:               $('#dct-txn-phase').val(),
                         amount:              $('#dct-txn-amount').val(),
                         description:         $('#dct-txn-desc').val().trim(),
                         transaction_date:    $('#dct-txn-date').val(),
@@ -354,9 +357,11 @@
                     DCT_APP.ajax('dct_save_transaction', data, (res) => {
                         $btn.prop('disabled', false);
                         DCT_APP.notify('#dct-txn-notice', res.data.message || res.data, res.success ? 'success' : 'error');
-                        if (res.success) { $('#dct-txn-form')[0].reset(); $('#dct-txn-date').val(new Date().toISOString().split('T')[0]); this.load({}); }
+                        if (res.success) { this.resetForm(); this.load({}); }
                     });
                 });
+
+                $('#dct-txn-cancel').on('click', () => this.resetForm());
             },
 
             bindFilters() {
@@ -378,7 +383,7 @@
             render() {
                 const $list = $('#dct-txn-list');
                 if (!this.data.length) {
-                    $list.html('<tr><td colspan="7" class="text-center" style="padding:30px;color:#64748b;">No transactions found.</td></tr>');
+                    $list.html('<tr><td colspan="10" class="text-center" style="padding:30px;color:#64748b;">No transactions found.</td></tr>');
                     return;
                 }
                 let html = '';
@@ -395,9 +400,16 @@
                         <td>${badge}</td>
                         <td>${$('<div>').text(from).html()}</td>
                         <td>${to}</td>
+                        <td>${$('<div>').text(t.category || '').html()}</td>
+                        <td>${$('<div>').text(t.phase || '').html()}</td>
                         <td class="${amtCls}">৳ ${DCT_APP.money(t.amount)}</td>
                         <td>${$('<div>').text(t.description || '').html()}</td>
-                        <td><button class="dct-btn dct-btn-danger dct-btn-sm" onclick="DCT_APP.Transactions.del(${t.id})">Del</button></td>
+                        <td>
+                            <div class="actions">
+                                <button class="dct-btn dct-btn-outline dct-btn-sm" onclick="DCT_APP.Transactions.edit(${t.id})">Edit</button>
+                                <button class="dct-btn dct-btn-danger dct-btn-sm" onclick="DCT_APP.Transactions.del(${t.id})">Del</button>
+                            </div>
+                        </td>
                     </tr>`;
                 });
                 $list.html(html);
@@ -409,6 +421,35 @@
                     DCT_APP.notify('#dct-txn-notice', res.data.message || res.data, res.success ? 'success' : 'error');
                     if (res.success) this.load({});
                 });
+            },
+
+            edit(id) {
+                const t = this.data.find(x => x.id == id);
+                if (!t) return;
+                $('#dct-txn-id').val(t.id);
+                $('#dct-txn-project').val(t.project_id);
+                this.populateStakeholders(t.project_id);
+                $('#dct-txn-type').val(t.transaction_type);
+                $('#dct-txn-from').val(t.from_stakeholder_id);
+                $('#dct-txn-to').val(t.to_stakeholder_id);
+                $('#dct-txn-category').val(t.category);
+                $('#dct-txn-phase').val(t.phase);
+                $('#dct-txn-amount').val(t.amount);
+                $('#dct-txn-date').val(t.transaction_date);
+                $('#dct-txn-desc').val(t.description);
+                $('#dct-txn-cancel').show();
+                $('#dct-txn-form .dct-btn-accent').text('Update Transaction');
+                this.typeToggle();
+                $('html, body').animate({ scrollTop: $('#dct-txn-form').offset().top - 80 }, 300);
+            },
+
+            resetForm() {
+                $('#dct-txn-form')[0].reset();
+                $('#dct-txn-id').val('');
+                $('#dct-txn-date').val(new Date().toISOString().split('T')[0]);
+                $('#dct-txn-cancel').hide();
+                $('#dct-txn-form .dct-btn-accent').text('Record Transaction');
+                this.typeToggle();
             }
         },
 
@@ -578,6 +619,8 @@
             if ($('#dct-dash-projects').length)      this.Dashboard.init();
         }
     };
+
+    window.DCT_APP = DCT_APP;
 
     $(document).ready(() => DCT_APP.init());
 

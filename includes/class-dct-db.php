@@ -215,6 +215,21 @@ class DCT_DB {
         return $wpdb->delete( "{$wpdb->prefix}dct_transactions", array( 'id' => $id ) );
     }
 
+    public static function update_transaction( $id, $data ) {
+        global $wpdb;
+        return $wpdb->update( "{$wpdb->prefix}dct_transactions", array(
+            'project_id'          => intval( $data['project_id'] ),
+            'from_stakeholder_id' => ! empty( $data['from_stakeholder_id'] ) ? intval( $data['from_stakeholder_id'] ) : null,
+            'to_stakeholder_id'   => ! empty( $data['to_stakeholder_id'] )   ? intval( $data['to_stakeholder_id'] )   : null,
+            'transaction_type'    => sanitize_text_field( $data['transaction_type'] ),
+            'category'            => sanitize_text_field( $data['category'] ),
+            'phase'               => sanitize_text_field( $data['phase'] ),
+            'amount'              => floatval( $data['amount'] ),
+            'description'         => sanitize_textarea_field( $data['description'] ),
+            'transaction_date'    => sanitize_text_field( $data['transaction_date'] ),
+        ), array( 'id' => $id ) );
+    }
+
     /* ── Summary ── */
 
     public static function get_stakeholder_summary( $stakeholder_id, $project_id = null ) {

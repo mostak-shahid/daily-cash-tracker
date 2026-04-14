@@ -7,9 +7,10 @@
     <div class="dct-grid-2" style="margin-bottom:0;">
         <!-- FORM -->
         <div class="dct-card">
-            <div class="dct-card-title">Record a Transaction</div>
-            <div id="dct-txn-notice" class="dct-alert"></div>
-            <form id="dct-txn-form">
+                <div class="dct-card-title">Record a Transaction</div>
+                <div id="dct-txn-notice" class="dct-alert"></div>
+                <form id="dct-txn-form">
+                    <input type="hidden" id="dct-txn-id" value="">
 
                 <div class="dct-form-group">
                     <label class="dct-label">Project <span class="req">*</span></label>
@@ -80,7 +81,10 @@
                     <textarea id="dct-txn-desc" class="dct-textarea" placeholder="Optional notes about this transaction…"></textarea>
                 </div>
 
-                <button type="submit" class="dct-btn dct-btn-accent">Record Transaction</button>
+                <div style="display:flex;gap:10px;">
+                    <button type="submit" class="dct-btn dct-btn-accent">Record Transaction</button>
+                    <button type="button" id="dct-txn-cancel" class="dct-btn dct-btn-outline" style="display:none;">Cancel</button>
+                </div>
             </form>
         </div>
 
@@ -109,13 +113,15 @@
                                 <th>Type</th>
                                 <th>From</th>
                                 <th>To</th>
+                                <th>Category</th>
+                                <th>Phase</th>
                                 <th>Amount</th>
                                 <th>Notes</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody id="dct-txn-list">
-                            <tr><td colspan="8" class="text-center" style="padding:30px;color:#64748b;">Loading…</td></tr>
+                            <tr><td colspan="10" class="text-center" style="padding:30px;color:#64748b;">Loading…</td></tr>
                         </tbody>
                     </table>
                 </div>
