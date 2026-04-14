@@ -201,12 +201,12 @@ class DCT_DB {
             'from_stakeholder_id' => ! empty( $data['from_stakeholder_id'] ) ? intval( $data['from_stakeholder_id'] ) : null,
             'to_stakeholder_id'   => ! empty( $data['to_stakeholder_id'] )   ? intval( $data['to_stakeholder_id'] )   : null,
             'transaction_type'    => sanitize_text_field( $data['transaction_type'] ),
-            'amount'              => floatval( $data['amount'] ),
             'category'            => sanitize_text_field( $data['category'] ),
             'phase'               => sanitize_text_field( $data['phase'] ),
+            'amount'              => floatval( $data['amount'] ),
             'description'         => sanitize_textarea_field( $data['description'] ),
             'transaction_date'    => sanitize_text_field( $data['transaction_date'] ),
-        ), array( '%d', '%d', '%d', '%s', '%f', '%s', '%s', '%s' ) );
+        ), array( '%d', '%d', '%d', '%s', '%s', '%s', '%f', '%s', '%s' ) );
         return $wpdb->insert_id;
     }
 
