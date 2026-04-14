@@ -113,8 +113,15 @@ class DCT_Ajax {
     public function get_transactions() {
         $this->verify();
         $filters = array(
-            'project_id'     => intval( $_POST['project_id'] ?? 0 ),
-            'stakeholder_id' => intval( $_POST['stakeholder_id'] ?? 0 ),
+            'project_id'           => intval( $_POST['project_id'] ?? 0 ),
+            'stakeholder_id'       => intval( $_POST['stakeholder_id'] ?? 0 ),
+            'transaction_type'     => sanitize_text_field( $_POST['transaction_type'] ?? '' ),
+            'from_stakeholder_id'  => intval( $_POST['from_stakeholder_id'] ?? 0 ),
+            'to_stakeholder_id'    => intval( $_POST['to_stakeholder_id'] ?? 0 ),
+            'category'             => sanitize_text_field( $_POST['category'] ?? '' ),
+            'phase'                => sanitize_text_field( $_POST['phase'] ?? '' ),
+            'date_from'            => sanitize_text_field( $_POST['date_from'] ?? '' ),
+            'date_to'              => sanitize_text_field( $_POST['date_to'] ?? '' ),
         );
         $this->ok( DCT_DB::get_transactions( $filters ) );
     }

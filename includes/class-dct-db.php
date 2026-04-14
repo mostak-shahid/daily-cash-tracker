@@ -175,6 +175,34 @@ class DCT_DB {
             $args[]  = $filters['stakeholder_id'];
             $args[]  = $filters['stakeholder_id'];
         }
+        if ( ! empty( $filters['transaction_type'] ) ) {
+            $where[] = 't.transaction_type = %s';
+            $args[]  = $filters['transaction_type'];
+        }
+        if ( ! empty( $filters['from_stakeholder_id'] ) ) {
+            $where[] = 't.from_stakeholder_id = %d';
+            $args[]  = $filters['from_stakeholder_id'];
+        }
+        if ( ! empty( $filters['to_stakeholder_id'] ) ) {
+            $where[] = 't.to_stakeholder_id = %d';
+            $args[]  = $filters['to_stakeholder_id'];
+        }
+        if ( ! empty( $filters['category'] ) ) {
+            $where[] = 't.category = %s';
+            $args[]  = $filters['category'];
+        }
+        if ( ! empty( $filters['phase'] ) ) {
+            $where[] = 't.phase = %s';
+            $args[]  = $filters['phase'];
+        }
+        if ( ! empty( $filters['date_from'] ) ) {
+            $where[] = 't.transaction_date >= %s';
+            $args[]  = $filters['date_from'];
+        }
+        if ( ! empty( $filters['date_to'] ) ) {
+            $where[] = 't.transaction_date <= %s';
+            $args[]  = $filters['date_to'];
+        }
 
         $where_str = implode( ' AND ', $where );
         $sql = "SELECT t.*,

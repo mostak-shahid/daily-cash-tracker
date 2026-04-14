@@ -91,14 +91,72 @@
         <!-- FILTERS + LIST -->
         <div style="display:flex;flex-direction:column;gap:16px;">
             <div class="dct-card" style="padding:16px 20px;">
-                <div style="display:flex;gap:10px;align-items:flex-end;">
-                    <div style="flex:1;">
-                        <label class="dct-label" style="margin-bottom:4px;">Filter by Project</label>
+                <div style="display:grid;grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));gap:10px;align-items:flex-end;">
+                    <div>
+                        <label class="dct-label" style="margin-bottom:4px;">Project</label>
                         <select id="dct-filter-project" class="dct-select">
-                            <option value="">All Projects</option>
+                            <option value="">All</option>
                         </select>
                     </div>
-                    <button id="dct-filter-btn" class="dct-btn dct-btn-primary">Filter</button>
+                    <div>
+                        <label class="dct-label" style="margin-bottom:4px;">Type</label>
+                        <select id="dct-filter-type" class="dct-select">
+                            <option value="">All</option>
+                            <option value="transfer">Transfer</option>
+                            <option value="expense">Expense</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="dct-label" style="margin-bottom:4px;">From</label>
+                        <select id="dct-filter-from" class="dct-select">
+                            <option value="">All</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="dct-label" style="margin-bottom:4px;">To</label>
+                        <select id="dct-filter-to" class="dct-select">
+                            <option value="">All</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="dct-label" style="margin-bottom:4px;">Category</label>
+                        <select id="dct-filter-category" class="dct-select">
+                            <option value="">All</option>
+                            <option value="Cash In">Cash In</option>
+                            <option value="Labor">Labor</option>
+                            <option value="Materials">Materials</option>
+                            <option value="Equipment">Equipment</option>
+                            <option value="Subcontractor">Subcontractor</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="dct-label" style="margin-bottom:4px;">Phase</label>
+                        <select id="dct-filter-phase" class="dct-select">
+                            <option value="">All</option>
+                            <option value="Site Preparation">Site Preparation</option>
+                            <option value="Pilling">Pilling</option>
+                            <option value="Basement">Basement</option>
+                            <option value="Ground Floor">Ground Floor</option>
+                            <option value="First Floor">First Floor</option>
+                            <option value="Second Floor">Second Floor</option>
+                            <option value="Third Floor">Third Floor</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="dct-label" style="margin-bottom:4px;">Date From</label>
+                        <input type="date" id="dct-filter-date-from" class="dct-input">
+                    </div>
+                    <div>
+                        <label class="dct-label" style="margin-bottom:4px;">Date To</label>
+                        <input type="date" id="dct-filter-date-to" class="dct-input">
+                    </div>
+                    <div>
+                        <button id="dct-filter-btn" class="dct-btn dct-btn-primary" style="width:100%;">Filter</button>
+                    </div>
+                    <div>
+                        <button id="dct-filter-reset" class="dct-btn dct-btn-outline" style="width:100%;">Reset</button>
+                    </div>
                 </div>
             </div>
 

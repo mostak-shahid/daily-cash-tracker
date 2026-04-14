@@ -310,13 +310,19 @@
                     ['#dct-txn-project', '#dct-filter-project'].forEach(sel => {
                         const $s = $(sel);
                         const hasAll = sel === '#dct-filter-project';
-                        $s.empty().append(`<option value="">${hasAll ? 'All Projects' : '— Select Project —'}</option>`);
+                        $s.empty().append(`<option value="">${hasAll ? 'All' : '— Select Project —'}</option>`);
                         r.data.forEach(p => $s.append(`<option value="${p.id}">${$('<div>').text(p.name).html()}</option>`));
                     });
                 });
                 DCT_APP.ajax('dct_get_stakeholders', {}, (r) => {
                     if (!r.success) return;
                     this.allStakeholders = r.data;
+                    ['#dct-txn-from', '#dct-txn-to', '#dct-filter-from', '#dct-filter-to'].forEach(sel => {
+                        const $s = $(sel);
+                        const hasAll = sel === '#dct-filter-from' || sel === '#dct-filter-to';
+                        $s.empty().append(`<option value="">${hasAll ? 'All' : '— None —'}</option>`);
+                        r.data.forEach(s => $s.append(`<option value="${s.id}">${$('<div>').text(s.name).html()}</option>`));
+                    });
                 });
             },
 
@@ -367,8 +373,27 @@
             bindFilters() {
                 $('#dct-filter-btn').on('click', () => {
                     this.load({
-                        project_id: $('#dct-filter-project').val(),
+                        project_id:           $('#dct-filter-project').val(),
+                        transaction_type:     $('#dct-filter-type').val(),
+                        from_stakeholder_id:  $('#dct-filter-from').val(),
+                        to_stakeholder_id:    $('#dct-filter-to').val(),
+                        category:             $('#dct-filter-category').val(),
+                        phase:                $('#dct-filter-phase').val(),
+                        date_from:            $('#dct-filter-date-from').val(),
+                        date_to:              $('#dct-filter-date-to').val(),
                     });
+                });
+
+                $('#dct-filter-reset').on('click', () => {
+                    $('#dct-filter-project').val('');
+                    $('#dct-filter-type').val('');
+                    $('#dct-filter-from').val('');
+                    $('#dct-filter-to').val('');
+                    $('#dct-filter-category').val('');
+                    $('#dct-filter-phase').val('');
+                    $('#dct-filter-date-from').val('');
+                    $('#dct-filter-date-to').val('');
+                    this.load({});
                 });
             },
 
@@ -524,7 +549,7 @@
                 if (d.transactions && d.transactions.length) {
                     html += `<div class="dct-card-title">Transaction History</div>
                     <div class="dct-table-wrap"><table class="dct-table">
-                    <thead><tr><th>Date</th><th>Project</th><th>Type</th><th>From</th><th>To</th><th>Amount</th><th>Notes</th></tr></thead>
+                    <thead><tr><th>Date</th><th>Project</th><th>Type</th><th>From</th><th>To</th><th>Category</th><th>Phase</th><th>Amount</th><th>Notes</th></tr></thead>
                     <tbody>`;
                     d.transactions.forEach(t => {
                         const badge = t.transaction_type === 'expense'
@@ -537,6 +562,8 @@
                             <td>${badge}</td>
                             <td>${$('<div>').text(t.from_name||'—').html()}</td>
                             <td>${to}</td>
+                            <td>${$('<div>').text(t.category||'').html()}</td>
+                            <td>${$('<div>').text(t.phase||'').html()}</td>
                             <td class="${t.transaction_type==='expense'?'dct-amount-out':'dct-amount-in'}">৳ ${DCT_APP.money(t.amount)}</td>
                             <td>${$('<div>').text(t.description||'').html()}</td>
                         </tr>`;
