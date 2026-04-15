@@ -507,8 +507,10 @@
             load() {
                 const sid = $('#dct-summary-stakeholder').val();
                 const pid = $('#dct-summary-project').val();
+                const dateFrom = $('#dct-summary-date-from').val();
+                const dateTo = $('#dct-summary-date-to').val();
                 if (!sid) { DCT_APP.notify('#dct-summary-notice', 'Please select a stakeholder.', 'error'); return; }
-                DCT_APP.ajax('dct_get_summary', { stakeholder_id: sid, project_id: pid }, (res) => {
+                DCT_APP.ajax('dct_get_summary', { stakeholder_id: sid, project_id: pid, date_from: dateFrom, date_to: dateTo }, (res) => {
                     if (!res.success) { DCT_APP.notify('#dct-summary-notice', res.data, 'error'); return; }
                     this.renderSingle(res.data);
                 });
@@ -578,7 +580,9 @@
 
             loadAll() {
                 const pid = $('#dct-all-summary-project').val();
-                DCT_APP.ajax('dct_get_all_summary', { project_id: pid }, (res) => {
+                const dateFrom = $('#dct-all-summary-date-from').val();
+                const dateTo = $('#dct-all-summary-date-to').val();
+                DCT_APP.ajax('dct_get_all_summary', { project_id: pid, date_from: dateFrom, date_to: dateTo }, (res) => {
                     if (!res.success) return;
                     this.renderAll(res.data);
                 });

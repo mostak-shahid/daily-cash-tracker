@@ -260,43 +260,64 @@ class DCT_DB {
 
     /* ── Summary ── */
 
-    public static function get_stakeholder_summary( $stakeholder_id, $project_id = null ) {
+    public static function get_stakeholder_summary( $stakeholder_id, $project_id = null, $date_from = null, $date_to = null ) {
         global $wpdb;
         $project_cond = $project_id ? $wpdb->prepare( 'AND t.project_id = %d', $project_id ) : '';
+        $date_conditions = array();
+        $date_args = array();
+
+        if ( $date_from ) {
+            $date_conditions[] = 't.transaction_date >= %s';
+            $date_args[] = $date_from;
+        }
+        if ( $date_to ) {
+            $date_conditions[] = 't.transaction_date <= %s';
+            $date_args[] = $date_to;
+        }
+        $date_cond = $date_conditions ? 'AND ' . implode( ' AND ', $date_conditions ) : '';
 
         // Money received (someone gave to this stakeholder)
-        $received = $wpdb->get_var( $wpdb->prepare(
+        $received_sql = $wpdb->prepare(
             "SELECT COALESCE(SUM(amount),0) FROM {$wpdb->prefix}dct_transactions t
-             WHERE t.to_stakeholder_id = %d AND t.transaction_type='transfer' $project_cond",
-            $stakeholder_id
-        ) );
+             WHERE t.to_stakeholder_id = %d AND t.transaction_type='transfer' $project_cond $date_cond",
+            $stakeholder_id,
+            ...$date_args
+        );
+        $received = $wpdb->get_var( $received_sql );
 
         // Money given out (this stakeholder gave to someone)
-        $given = $wpdb->get_var( $wpdb->prepare(
+        $given_sql = $wpdb->prepare(
             "SELECT COALESCE(SUM(amount),0) FROM {$wpdb->prefix}dct_transactions t
-             WHERE t.from_stakeholder_id = %d AND t.transaction_type='transfer' $project_cond",
-            $stakeholder_id
-        ) );
+             WHERE t.from_stakeholder_id = %d AND t.transaction_type='transfer' $project_cond $date_cond",
+            $stakeholder_id,
+            ...$date_args
+        );
+        $given = $wpdb->get_var( $given_sql );
 
         // Expenses paid by this stakeholder
-        $expenses = $wpdb->get_var( $wpdb->prepare(
+        $expenses_sql = $wpdb->prepare(
             "SELECT COALESCE(SUM(amount),0) FROM {$wpdb->prefix}dct_transactions t
-             WHERE t.from_stakeholder_id = %d AND t.transaction_type='expense' $project_cond",
-            $stakeholder_id
-        ) );
+             WHERE t.from_stakeholder_id = %d AND t.transaction_type='expense' $project_cond $date_cond",
+            $stakeholder_id,
+            ...$date_args
+        );
+        $expenses = $wpdb->get_var( $expenses_sql );
 
         // Recent transactions involving this stakeholder
         $project_cond2 = $project_id ? $wpdb->prepare( 'AND t.project_id = %d', $project_id ) : '';
-        $transactions = $wpdb->get_results( $wpdb->prepare(
+        $transactions_sql = $wpdb->prepare(
             "SELECT t.*, p.name AS project_name, fs.name AS from_name, ts.name AS to_name
              FROM {$wpdb->prefix}dct_transactions t
              LEFT JOIN {$wpdb->prefix}dct_projects p ON p.id = t.project_id
              LEFT JOIN {$wpdb->prefix}dct_stakeholders fs ON fs.id = t.from_stakeholder_id
              LEFT JOIN {$wpdb->prefix}dct_stakeholders ts ON ts.id = t.to_stakeholder_id
-             WHERE (t.from_stakeholder_id = %d OR t.to_stakeholder_id = %d) $project_cond2
+             WHERE (t.from_stakeholder_id = %d OR t.to_stakeholder_id = %d) $project_cond2 $date_cond
              ORDER BY t.transaction_date DESC, t.id DESC LIMIT 100",
-            $stakeholder_id, $stakeholder_id
-        ) );
+            $stakeholder_id,
+            $stakeholder_id,
+            ...$date_args
+        );
+        $transactions = $wpdb->get_results( $transactions_sql );
 
         return array(
             'received'     => floatval( $received ),

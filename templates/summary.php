@@ -28,6 +28,14 @@
                             <option value="">All Projects</option>
                         </select>
                     </div>
+                    <div style="flex:1;min-width:150px;">
+                        <label class="dct-label">From Date</label>
+                        <input type="date" id="dct-summary-date-from" class="dct-input">
+                    </div>
+                    <div style="flex:1;min-width:150px;">
+                        <label class="dct-label">To Date</label>
+                        <input type="date" id="dct-summary-date-to" class="dct-input">
+                    </div>
                     <button id="dct-summary-btn" class="dct-btn dct-btn-accent" style="white-space:nowrap;">Load Summary →</button>
                 </div>
             </div>
@@ -45,6 +53,14 @@
                         <select id="dct-all-summary-project" class="dct-select">
                             <option value="">All Projects</option>
                         </select>
+                    </div>
+                    <div style="flex:1;min-width:150px;">
+                        <label class="dct-label">From Date</label>
+                        <input type="date" id="dct-all-summary-date-from" class="dct-input">
+                    </div>
+                    <div style="flex:1;min-width:150px;">
+                        <label class="dct-label">To Date</label>
+                        <input type="date" id="dct-all-summary-date-to" class="dct-input">
                     </div>
                     <button id="dct-all-summary-btn" class="dct-btn dct-btn-primary">Load Overview</button>
                 </div>

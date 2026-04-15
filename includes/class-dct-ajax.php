@@ -162,9 +162,11 @@ class DCT_Ajax {
         $this->verify();
         $sid = intval( $_POST['stakeholder_id'] );
         $pid = intval( $_POST['project_id'] ?? 0 );
+        $date_from = sanitize_text_field( $_POST['date_from'] ?? '' );
+        $date_to = sanitize_text_field( $_POST['date_to'] ?? '' );
         if ( ! $sid ) { $this->err( 'Select a stakeholder.' ); return; }
         $sh = DCT_DB::get_stakeholder( $sid );
-        $summary = DCT_DB::get_stakeholder_summary( $sid, $pid ?: null );
+        $summary = DCT_DB::get_stakeholder_summary( $sid, $pid ?: null, $date_from ?: null, $date_to ?: null );
         $summary['stakeholder'] = $sh;
         $this->ok( $summary );
     }
@@ -173,9 +175,11 @@ class DCT_Ajax {
         $this->verify();
         $stakeholders = DCT_DB::get_stakeholders();
         $pid = intval( $_POST['project_id'] ?? 0 );
+        $date_from = sanitize_text_field( $_POST['date_from'] ?? '' );
+        $date_to = sanitize_text_field( $_POST['date_to'] ?? '' );
         $result = array();
         foreach ( $stakeholders as $s ) {
-            $sum = DCT_DB::get_stakeholder_summary( $s->id, $pid ?: null );
+            $sum = DCT_DB::get_stakeholder_summary( $s->id, $pid ?: null, $date_from ?: null, $date_to ?: null );
             $result[] = array(
                 'id'       => $s->id,
                 'name'     => $s->name,
