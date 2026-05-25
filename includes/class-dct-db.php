@@ -327,4 +327,197 @@ class DCT_DB {
             'transactions' => $transactions,
         );
     }
+
+    /* ── Export/Import ── */
+
+    public static function export_data() {
+        global $wpdb;
+
+        $data = array();
+
+        $data['projects'] = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}dct_projects ORDER BY id ASC" );
+        $data['stakeholders'] = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}dct_stakeholders ORDER BY id ASC" );
+        $data['project_stakeholders'] = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}dct_project_stakeholders ORDER BY id ASC" );
+        $data['transactions'] = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}dct_transactions ORDER BY id ASC" );
+
+        return $data;
+    }
+
+    public static function import_data( $data ) {
+        global $wpdb;
+        $wpdb->query( 'START TRANSACTION' );
+
+        try {
+            $errors = array();
+
+            if ( isset( $data['projects'] ) && is_array( $data['projects'] ) ) {
+                foreach ( $data['projects'] as $p ) {
+                    if ( empty( $p->name ) ) continue;
+                    $wpdb->replace(
+                        "{$wpdb->prefix}dct_projects",
+                        array(
+                            'id'          => isset( $p->id ) ? intval( $p->id ) : null,
+                            'name'        => sanitize_text_field( $p->name ),
+                            'address'     => sanitize_textarea_field( $p->address ?? '' ),
+                            'description' => sanitize_textarea_field( $p->description ?? '' ),
+                        ),
+                        array( '%d', '%s', '%s', '%s' )
+                    );
+                }
+            }
+
+            if ( isset( $data['stakeholders'] ) && is_array( $data['stakeholders'] ) ) {
+                foreach ( $data['stakeholders'] as $s ) {
+                    if ( empty( $s->name ) ) continue;
+                    $wpdb->replace(
+                        "{$wpdb->prefix}dct_stakeholders",
+                        array(
+                            'id'          => isset( $s->id ) ? intval( $s->id ) : null,
+                            'name'        => sanitize_text_field( $s->name ),
+                            'phone'       => sanitize_text_field( $s->phone ?? '' ),
+                            'address'     => sanitize_textarea_field( $s->address ?? '' ),
+                            'description' => sanitize_textarea_field( $s->description ?? '' ),
+                        ),
+                        array( '%d', '%s', '%s', '%s', '%s' )
+                    );
+                }
+            }
+
+            if ( isset( $data['project_stakeholders'] ) && is_array( $data['project_stakeholders'] ) ) {
+                foreach ( $data['project_stakeholders'] as $ps ) {
+                    if ( empty( $ps->project_id ) || empty( $ps->stakeholder_id ) ) continue;
+                    $wpdb->replace(
+                        "{$wpdb->prefix}dct_project_stakeholders",
+                        array(
+                            'id'              => isset( $ps->id ) ? intval( $ps->id ) : null,
+                            'project_id'      => intval( $ps->project_id ),
+                            'stakeholder_id'  => intval( $ps->stakeholder_id ),
+                        ),
+                        array( '%d', '%d', '%d' )
+                    );
+                }
+            }
+
+            if ( isset( $data['transactions'] ) && is_array( $data['transactions'] ) ) {
+                foreach ( $data['transactions'] as $t ) {
+                    if ( empty( $t->project_id ) || empty( $t->amount ) || empty( $t->transaction_date ) ) continue;
+                    $wpdb->replace(
+                        "{$wpdb->prefix}dct_transactions",
+                        array(
+                            'id'                   => isset( $t->id ) ? intval( $t->id ) : null,
+                            'project_id'           => intval( $t->project_id ),
+                            'from_stakeholder_id'  => ! empty( $t->from_stakeholder_id ) ? intval( $t->from_stakeholder_id ) : null,
+                            'to_stakeholder_id'    => ! empty( $t->to_stakeholder_id ) ? intval( $t->to_stakeholder_id ) : null,
+                            'transaction_type'    => in_array( $t->transaction_type ?? 'transfer', array( 'transfer', 'expense' ) ) ? $t->transaction_type : 'transfer',
+                            'category'             => sanitize_text_field( $t->category ?? '' ),
+                            'phase'                => sanitize_text_field( $t->phase ?? '' ),
+                            'amount'               => floatval( $t->amount ),
+                            'description'          => sanitize_textarea_field( $t->description ?? '' ),
+                            'transaction_date'     => sanitize_text_field( $t->transaction_date ),
+                        ),
+                        array( '%d', '%d', '%d', '%d', '%s', '%s', '%s', '%f', '%s', '%s' )
+                    );
+                }
+            }
+
+            $wpdb->query( 'COMMIT' );
+            return array( 'success' => true, 'message' => 'Data imported successfully.' );
+
+        } catch ( Exception $e ) {
+            $wpdb->query( 'ROLLBACK' );
+            return array( 'success' => false, 'message' => 'Import failed: ' . $e->getMessage() );
+        }
+    }
+
+    public static function import_chunk( $table, $chunk ) {
+        global $wpdb;
+        $rows_affected = 0;
+
+        $wpdb->query( 'START TRANSACTION' );
+
+        try {
+            switch ( $table ) {
+                case 'projects':
+                    foreach ( $chunk as $p ) {
+                        if ( empty( $p->name ) ) continue;
+                        $result = $wpdb->replace(
+                            "{$wpdb->prefix}dct_projects",
+                            array(
+                                'id'          => isset( $p->id ) ? intval( $p->id ) : null,
+                                'name'        => sanitize_text_field( $p->name ),
+                                'address'     => sanitize_textarea_field( $p->address ?? '' ),
+                                'description' => sanitize_textarea_field( $p->description ?? '' ),
+                            ),
+                            array( '%d', '%s', '%s', '%s' )
+                        );
+                        if ( $result !== false ) $rows_affected++;
+                    }
+                    break;
+
+                case 'stakeholders':
+                    foreach ( $chunk as $s ) {
+                        if ( empty( $s->name ) ) continue;
+                        $result = $wpdb->replace(
+                            "{$wpdb->prefix}dct_stakeholders",
+                            array(
+                                'id'          => isset( $s->id ) ? intval( $s->id ) : null,
+                                'name'        => sanitize_text_field( $s->name ),
+                                'phone'       => sanitize_text_field( $s->phone ?? '' ),
+                                'address'     => sanitize_textarea_field( $s->address ?? '' ),
+                                'description' => sanitize_textarea_field( $s->description ?? '' ),
+                            ),
+                            array( '%d', '%s', '%s', '%s', '%s' )
+                        );
+                        if ( $result !== false ) $rows_affected++;
+                    }
+                    break;
+
+                case 'project_stakeholders':
+                    foreach ( $chunk as $ps ) {
+                        if ( empty( $ps->project_id ) || empty( $ps->stakeholder_id ) ) continue;
+                        $result = $wpdb->replace(
+                            "{$wpdb->prefix}dct_project_stakeholders",
+                            array(
+                                'id'             => isset( $ps->id ) ? intval( $ps->id ) : null,
+                                'project_id'     => intval( $ps->project_id ),
+                                'stakeholder_id' => intval( $ps->stakeholder_id ),
+                            ),
+                            array( '%d', '%d', '%d' )
+                        );
+                        if ( $result !== false ) $rows_affected++;
+                    }
+                    break;
+
+                case 'transactions':
+                    foreach ( $chunk as $t ) {
+                        if ( empty( $t->project_id ) || empty( $t->amount ) || empty( $t->transaction_date ) ) continue;
+                        $result = $wpdb->replace(
+                            "{$wpdb->prefix}dct_transactions",
+                            array(
+                                'id'                  => isset( $t->id ) ? intval( $t->id ) : null,
+                                'project_id'          => intval( $t->project_id ),
+                                'from_stakeholder_id' => ! empty( $t->from_stakeholder_id ) ? intval( $t->from_stakeholder_id ) : null,
+                                'to_stakeholder_id'   => ! empty( $t->to_stakeholder_id ) ? intval( $t->to_stakeholder_id ) : null,
+                                'transaction_type'   => in_array( $t->transaction_type ?? 'transfer', array( 'transfer', 'expense' ) ) ? $t->transaction_type : 'transfer',
+                                'category'            => sanitize_text_field( $t->category ?? '' ),
+                                'phase'               => sanitize_text_field( $t->phase ?? '' ),
+                                'amount'              => floatval( $t->amount ),
+                                'description'         => sanitize_textarea_field( $t->description ?? '' ),
+                                'transaction_date'    => sanitize_text_field( $t->transaction_date ),
+                            ),
+                            array( '%d', '%d', '%d', '%d', '%s', '%s', '%s', '%f', '%s', '%s' )
+                        );
+                        if ( $result !== false ) $rows_affected++;
+                    }
+                    break;
+            }
+
+            $wpdb->query( 'COMMIT' );
+            return array( 'success' => true, 'rows_affected' => $rows_affected );
+
+        } catch ( Exception $e ) {
+            $wpdb->query( 'ROLLBACK' );
+            return array( 'success' => false, 'message' => $e->getMessage() );
+        }
+    }
 }

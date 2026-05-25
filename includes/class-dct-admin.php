@@ -24,6 +24,7 @@ class DCT_Admin {
         add_submenu_page( 'dct-dashboard', 'Assign',        'Assign',        'manage_options', 'dct-assign',        array( $this, 'page_assign' ) );
         add_submenu_page( 'dct-dashboard', 'Cash Entry',    'Cash Entry',    'manage_options', 'dct-transactions',  array( $this, 'page_transactions' ) );
         add_submenu_page( 'dct-dashboard', 'Summary',       'Summary',       'manage_options', 'dct-summary',       array( $this, 'page_summary' ) );
+        add_submenu_page( 'dct-dashboard', 'Export/Import', 'Export/Import', 'manage_options', 'dct-export-import', array( $this, 'page_export_import' ) );
     }
 
     public function enqueue_assets( $hook ) {
@@ -59,5 +60,9 @@ class DCT_Admin {
 
     public function page_summary() {
         include DCT_PLUGIN_DIR . 'templates/summary.php';
+    }
+
+    public function page_export_import() {
+        include DCT_PLUGIN_DIR . 'templates/export-import.php';
     }
 }

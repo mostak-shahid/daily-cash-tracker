@@ -49,9 +49,9 @@
                 let html = '';
                 this.data.forEach(p => {
                     html += `<tr>
-                        <td><strong>${this.esc(p.name)}</strong></td>
-                        <td>${this.esc(p.address)}</td>
-                        <td>${this.esc(p.description)}</td>
+                        <td data-title="Name"><strong>${this.esc(p.name)}</strong></td>
+                        <td data-title="Address">${this.esc(p.address)}</td>
+                        <td data-title="Description">${this.esc(p.description)}</td>
                         <td><div class="actions">
                             <button class="dct-btn dct-btn-outline dct-btn-sm" onclick="DCT_APP.Projects.edit(${p.id})">Edit</button>
                             <button class="dct-btn dct-btn-danger dct-btn-sm" onclick="DCT_APP.Projects.del(${p.id})">Delete</button>
@@ -137,10 +137,10 @@
                 let html = '';
                 this.data.forEach(s => {
                     html += `<tr>
-                        <td><strong>${this.esc(s.name)}</strong></td>
-                        <td>${this.esc(s.phone)}</td>
-                        <td>${this.esc(s.address)}</td>
-                        <td>${this.esc(s.description)}</td>
+                        <td data-title="Name"><strong>${this.esc(s.name)}</strong></td>
+                        <td data-title="Phone">${this.esc(s.phone)}</td>
+                        <td data-title="Address">${this.esc(s.address)}</td>
+                        <td data-title="Description">${this.esc(s.description)}</td>
                         <td><div class="actions">
                             <button class="dct-btn dct-btn-outline dct-btn-sm" onclick="DCT_APP.Stakeholders.edit(${s.id})">Edit</button>
                             <button class="dct-btn dct-btn-danger dct-btn-sm" onclick="DCT_APP.Stakeholders.del(${s.id})">Delete</button>
@@ -420,15 +420,15 @@
                     const to   = t.transaction_type === 'expense' ? '<em>Bill/Expense</em>' : (t.to_name || '—');
                     const amtCls = t.transaction_type === 'expense' ? 'dct-amount-out' : 'dct-amount-in';
                     html += `<tr>
-                        <td>${t.transaction_date}</td>
-                        <td>${$('<div>').text(t.project_name || '').html()}</td>
-                        <td>${badge}</td>
-                        <td>${$('<div>').text(from).html()}</td>
-                        <td>${to}</td>
-                        <td>${$('<div>').text(t.category || '').html()}</td>
-                        <td>${$('<div>').text(t.phase || '').html()}</td>
-                        <td class="${amtCls}">৳ ${DCT_APP.money(t.amount)}</td>
-                        <td>${$('<div>').text(t.description || '').html()}</td>
+                        <td data-title="Date">${t.transaction_date}</td>
+                        <td data-title="Project">${$('<div>').text(t.project_name || '').html()}</td>
+                        <td data-title="Type">${badge}</td>
+                        <td data-title="From">${$('<div>').text(from).html()}</td>
+                        <td data-title="To">${to}</td>
+                        <td data-title="Category">${$('<div>').text(t.category || '').html()}</td>
+                        <td data-title="Phase">${$('<div>').text(t.phase || '').html()}</td>
+                        <td class="${amtCls}" data-title="Amount">৳ ${DCT_APP.money(t.amount)}</td>
+                        <td data-title="Description">${$('<div>').text(t.description || '').html()}</td>
                         <td>
                             <div class="actions">
                                 <button class="dct-btn dct-btn-outline dct-btn-sm" onclick="DCT_APP.Transactions.edit(${t.id})">Edit</button>
@@ -559,15 +559,15 @@
                             : '<span class="dct-badge dct-badge-transfer">Transfer</span>';
                         const to = t.transaction_type === 'expense' ? '<em>Bill/Expense</em>' : ($('<div>').text(t.to_name || '—').html());
                         html += `<tr>
-                            <td>${t.transaction_date}</td>
-                            <td>${$('<div>').text(t.project_name||'').html()}</td>
-                            <td>${badge}</td>
-                            <td>${$('<div>').text(t.from_name||'—').html()}</td>
-                            <td>${to}</td>
-                            <td>${$('<div>').text(t.category||'').html()}</td>
-                            <td>${$('<div>').text(t.phase||'').html()}</td>
-                            <td class="${t.transaction_type==='expense'?'dct-amount-out':'dct-amount-in'}">৳ ${DCT_APP.money(t.amount)}</td>
-                            <td>${$('<div>').text(t.description||'').html()}</td>
+                            <td data-title="Date">${t.transaction_date}</td>
+                            <td data-title="Project">${$('<div>').text(t.project_name||'').html()}</td>
+                            <td data-title="Type">${badge}</td>
+                            <td data-title="From">${$('<div>').text(t.from_name||'—').html()}</td>
+                            <td data-title="To">${to}</td>
+                            <td data-title="Category">${$('<div>').text(t.category||'').html()}</td>
+                            <td data-title="Phase">${$('<div>').text(t.phase||'').html()}</td>
+                            <td data-title="Amount" class="${t.transaction_type==='expense'?'dct-amount-out':'dct-amount-in'}">৳ ${DCT_APP.money(t.amount)}</td>
+                            <td data-title="Description">${$('<div>').text(t.description||'').html()}</td>
                         </tr>`;
                     });
                     html += '</tbody></table></div>';
@@ -594,11 +594,11 @@
                 data.forEach(s => {
                     const balCls = s.balance >= 0 ? 'dct-amount-in' : 'dct-amount-out';
                     html += `<tr>
-                        <td><strong>${$('<div>').text(s.name).html()}</strong></td>
-                        <td class="dct-amount-in">৳ ${DCT_APP.money(s.received)}</td>
-                        <td class="dct-amount-out">৳ ${DCT_APP.money(s.given)}</td>
-                        <td style="color:var(--dct-accent);font-weight:700;">৳ ${DCT_APP.money(s.expenses)}</td>
-                        <td class="${balCls}">৳ ${DCT_APP.money(s.balance)}</td>
+                        <td data-title="Name"><strong>${$('<div>').text(s.name).html()}</strong></td>
+                        <td data-title="Received" class="dct-amount-in">৳ ${DCT_APP.money(s.received)}</td>
+                        <td data-title="Given" class="dct-amount-out">৳ ${DCT_APP.money(s.given)}</td>
+                        <td data-title="Expenses" style="color:var(--dct-accent);font-weight:700;">৳ ${DCT_APP.money(s.expenses)}</td>
+                        <td data-title="Balance" class="${balCls}">৳ ${DCT_APP.money(s.balance)}</td>
                     </tr>`;
                 });
                 html += '</tbody></table></div>';
@@ -625,6 +625,214 @@
             }
         },
 
+        /* ════════════════ EXPORT/IMPORT ════════════════ */
+
+        ExportImport: {
+            sessionId: null,
+            chunkSize: 50,
+
+            init() {
+                this.bindImportForm();
+            },
+
+            export() {
+                const $btn = $('#dct-export-btn');
+                $btn.prop('disabled', true).html('<span class="dct-loading"></span> Exporting...');
+
+                const formData = new FormData();
+                formData.append('action', 'dct_export_data');
+                formData.append('nonce', DCT.nonce);
+
+                fetch(DCT.ajax_url, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Export failed');
+                    return response.blob();
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'daily-cash-tracker-export-' + new Date().toISOString().slice(0,10) + '.json';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    
+                    DCT_APP.notify('#dct-export-notice', 'Data exported successfully!', 'success');
+                })
+                .catch(error => {
+                    DCT_APP.notify('#dct-export-notice', 'Export failed: ' + error.message, 'error');
+                })
+                .finally(() => {
+                    $btn.prop('disabled', false).html(`
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Export All Data
+                    `);
+                });
+            },
+
+            bindImportForm() {
+                $('#dct-import-form').on('submit', (e) => {
+                    e.preventDefault();
+
+                    const $btn = $('#dct-import-btn');
+                    const fileInput = $('#dct-import-file');
+                    const confirmCheck = $('#dct-import-confirm');
+
+                    if (!fileInput[0].files.length) {
+                        DCT_APP.notify('#dct-import-notice', 'Please select a file.', 'error');
+                        return;
+                    }
+
+                    if (!confirmCheck.prop('checked')) {
+                        DCT_APP.notify('#dct-import-notice', 'Please confirm you understand this action.', 'error');
+                        return;
+                    }
+
+                    this.startImport();
+                });
+            },
+
+            startImport() {
+                const $btn = $('#dct-import-btn');
+                const fileInput = $('#dct-import-file');
+
+                if (!fileInput[0].files.length) {
+                    DCT_APP.notify('#dct-import-notice', 'Please select a file.', 'error');
+                    return;
+                }
+
+                $btn.prop('disabled', true).html('<span class="dct-loading"></span> Preparing...');
+                $('#dct-import-progress').show();
+                $('#dct-import-notice').hide();
+
+                this.updateProgress(0, 0, 'Preparing...');
+
+                const formData = new FormData();
+                formData.append('action', 'dct_import_prepare');
+                formData.append('nonce', DCT.nonce);
+                formData.append('import_file', fileInput[0].files[0]);
+
+                $.ajax({
+                    url: DCT.ajax_url,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: (res) => {
+                        if (!res.success) {
+                            DCT_APP.notify('#dct-import-notice', res.data, 'error');
+                            this.resetImportForm();
+                            return;
+                        }
+
+                        this.sessionId = res.data.session_id;
+                        this.processChunks();
+                    },
+                    error: (xhr, status, error) => {
+                        console.error('AJAX error:', status, error);
+                        console.error('Response:', xhr.responseText);
+                        DCT_APP.notify('#dct-import-notice', 'Failed to prepare import. Please try again.', 'error');
+                        this.resetImportForm();
+                    },
+                    dataType: 'json'
+                });
+            },
+
+            processChunks() {
+                const formData = {
+                    action: 'dct_import_process',
+                    nonce: DCT.nonce,
+                    session_id: this.sessionId,
+                    chunk_size: this.chunkSize
+                };
+
+                const processNextChunk = () => {
+                    $.post(DCT.ajax_url, formData, (res) => {
+                        if (!res.success) {
+                            DCT_APP.notify('#dct-import-notice', res.data, 'error');
+                            this.resetImportForm();
+                            return;
+                        }
+
+                        this.updateProgress(
+                            res.data.processed_rows,
+                            res.data.total_rows,
+                            res.data.current_table,
+                            res.data.percent
+                        );
+
+                        if (res.data.complete) {
+                            this.completeImport();
+                        } else {
+                            setTimeout(processNextChunk, 100);
+                        }
+                    }, 'json')
+                    .fail(() => {
+                        DCT_APP.notify('#dct-import-notice', 'Import failed during processing. Please try again.', 'error');
+                        this.resetImportForm();
+                    });
+                };
+
+                processNextChunk();
+            },
+
+            updateProgress(processed, total, currentTable, percent) {
+                const calculatedPercent = percent !== undefined ? percent : Math.round((processed / Math.max(1, total)) * 100);
+                
+                $('#dct-progress-status').text('Importing...');
+                $('#dct-progress-percent').text(calculatedPercent + '%');
+                $('#dct-progress-bar').css('width', calculatedPercent + '%');
+                $('#dct-progress-rows').text(processed + ' / ' + total + ' rows imported');
+                $('#dct-progress-table').text('Current table: ' + this.formatTableName(currentTable));
+            },
+
+            formatTableName(table) {
+                const names = {
+                    'projects': 'Projects',
+                    'stakeholders': 'Stakeholders',
+                    'project_stakeholders': 'Project Assignments',
+                    'transactions': 'Transactions',
+                    'Preparing...': 'Initializing...'
+                };
+                return names[table] || table;
+            },
+
+            completeImport() {
+                $('#dct-progress-status').text('Complete!');
+                $('#dct-progress-bar').css('width', '100%');
+                $('#dct-progress-table').text('Import complete!');
+                
+                DCT_APP.notify('#dct-import-notice', 'Data imported successfully!', 'success');
+                
+                $('#dct-import-file').val('');
+                $('#dct-import-confirm').prop('checked', false);
+                this.resetImportForm();
+            },
+
+            resetImportForm() {
+                $('#dct-import-btn').prop('disabled', false).html(`
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    Import Data
+                `);
+                
+                setTimeout(() => {
+                    $('#dct-import-progress').fadeOut(400);
+                }, 3000);
+            }
+        },
+
         /* ════════════════ TABS ════════════════ */
 
         initTabs() {
@@ -648,6 +856,7 @@
             if ($('#dct-txn-list').length)           this.Transactions.init();
             if ($('#dct-summary-stakeholder').length) this.Summary.init();
             if ($('#dct-dash-projects').length)      this.Dashboard.init();
+            if ($('#dct-export-btn').length)         this.ExportImport.init();
         }
     };
 

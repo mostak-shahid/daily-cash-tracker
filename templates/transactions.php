@@ -43,26 +43,19 @@
 
                 <div class="dct-form-group" id="dct-txn-to-wrap">
                     <label class="dct-label">Category</label>
-                    <select id="dct-txn-category" class="dct-select">
-                        <option value="Cash In">Cash In</option>
-                        <option value="Labor">Labor</option>
-                        <option value="Materials">Materials</option>
-                        <option value="Equipment">Equipment</option>
-                        <option value="Subcontractor">Subcontractor</option>
-                        <option value="Other">Other</option>
+                    <select id="dct-txn-category" class="dct-select">   
+                        <?php foreach(CATEGORIES as $cat): ?>
+                            <option value="<?php echo $cat; ?>"><?php echo $cat; ?></option>
+                        <?php endforeach; ?>                                           
                     </select>
                 </div>
 
                 <div class="dct-form-group" id="dct-txn-to-wrap">
                     <label class="dct-label">Phase</label>
                     <select id="dct-txn-phase" class="dct-select">
-                        <option value="Site Preparation">Site Preparation</option>
-                        <option value="Pilling">Pilling</option>
-                        <option value="Basement">Basement</option>
-                        <option value="Ground Floor">Ground Floor</option>
-                        <option value="First Floor">First Floor</option>
-                        <option value="Second Floor">Second Floor</option>
-                        <option value="Third Floor">Third Floor</option>
+                        <?php foreach(PHASES as $phase): ?>
+                            <option value="<?php echo $phase; ?>"><?php echo $phase; ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
 
@@ -122,25 +115,18 @@
                         <label class="dct-label" style="margin-bottom:4px;">Category</label>
                         <select id="dct-filter-category" class="dct-select">
                             <option value="">All</option>
-                            <option value="Cash In">Cash In</option>
-                            <option value="Labor">Labor</option>
-                            <option value="Materials">Materials</option>
-                            <option value="Equipment">Equipment</option>
-                            <option value="Subcontractor">Subcontractor</option>
-                            <option value="Other">Other</option>
+                            <?php foreach(CATEGORIES as $cat): ?>
+                                <option value="<?php echo $cat; ?>"><?php echo $cat; ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                     <div>
                         <label class="dct-label" style="margin-bottom:4px;">Phase</label>
                         <select id="dct-filter-phase" class="dct-select">
                             <option value="">All</option>
-                            <option value="Site Preparation">Site Preparation</option>
-                            <option value="Pilling">Pilling</option>
-                            <option value="Basement">Basement</option>
-                            <option value="Ground Floor">Ground Floor</option>
-                            <option value="First Floor">First Floor</option>
-                            <option value="Second Floor">Second Floor</option>
-                            <option value="Third Floor">Third Floor</option>
+                            <?php foreach(PHASES as $phase): ?>
+                                <option value="<?php echo $phase; ?>"><?php echo $phase; ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                     <div>
