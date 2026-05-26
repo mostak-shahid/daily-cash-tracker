@@ -12,72 +12,72 @@
                 <form id="dct-txn-form">
                     <input type="hidden" id="dct-txn-id" value="">
 
-                <div class="dct-form-group">
-                    <label class="dct-label">Project <span class="req">*</span></label>
-                    <select id="dct-txn-project" class="dct-select">
-                        <option value="">— Select Project —</option>
-                    </select>
-                </div>
+                    <div class="dct-form-group">
+                        <label class="dct-label">Project <span class="req">*</span></label>
+                        <select id="dct-txn-project" class="dct-select">
+                            <option value="">— Select Project —</option>
+                        </select>
+                    </div>
 
-                <div class="dct-form-group">
-                    <label class="dct-label">Transaction Type <span class="req">*</span></label>
-                    <select id="dct-txn-type" class="dct-select">
-                        <option value="transfer">💸 Cash Transfer (person → person)</option>
-                        <option value="expense">🧾 Expense / Bill Payment</option>
-                    </select>
-                </div>
+                    <div class="dct-form-group">
+                        <label class="dct-label">Transaction Type <span class="req">*</span></label>
+                        <select id="dct-txn-type" class="dct-select">
+                            <option value="transfer">💸 Cash Transfer (person → person)</option>
+                            <option value="expense">🧾 Expense / Bill Payment</option>
+                        </select>
+                    </div>
 
-                <div class="dct-form-group">
-                    <label class="dct-label" id="dct-txn-from-label">From (Giver)</label>
-                    <select id="dct-txn-from" class="dct-select">
-                        <option value="">— Select project first —</option>
-                    </select>
-                </div>
+                    <div class="dct-form-group">
+                        <label class="dct-label" id="dct-txn-from-label">From (Giver)</label>
+                        <select id="dct-txn-from" class="dct-select">
+                            <option value="">— Select project first —</option>
+                        </select>
+                    </div>
 
-                <div class="dct-form-group" id="dct-txn-to-wrap">
-                    <label class="dct-label">To (Receiver)</label>
-                    <select id="dct-txn-to" class="dct-select">
-                        <option value="">— Select project first —</option>
-                    </select>
-                </div>
+                    <div class="dct-form-group" id="dct-txn-to-wrap">
+                        <label class="dct-label">To (Receiver)</label>
+                        <select id="dct-txn-to" class="dct-select">
+                            <option value="">— Select project first —</option>
+                        </select>
+                    </div>
 
-                <div class="dct-form-group" id="dct-txn-to-wrap">
-                    <label class="dct-label">Category</label>
-                    <select id="dct-txn-category" class="dct-select">   
-                        <?php foreach(CATEGORIES as $cat): ?>
-                            <option value="<?php echo $cat; ?>"><?php echo $cat; ?></option>
-                        <?php endforeach; ?>                                           
-                    </select>
-                </div>
+                    <div class="dct-form-group" id="dct-txn-to-wrap">
+                        <label class="dct-label">Category</label>
+                        <select id="dct-txn-category" class="dct-select">   
+                            <?php foreach(CATEGORIES as $cat): ?>
+                                <option value="<?php echo $cat; ?>"><?php echo $cat; ?></option>
+                            <?php endforeach; ?>                                           
+                        </select>
+                    </div>
 
-                <div class="dct-form-group" id="dct-txn-to-wrap">
-                    <label class="dct-label">Phase</label>
-                    <select id="dct-txn-phase" class="dct-select">
-                        <?php foreach(PHASES as $phase): ?>
-                            <option value="<?php echo $phase; ?>"><?php echo $phase; ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
+                    <div class="dct-form-group" id="dct-txn-to-wrap">
+                        <label class="dct-label">Phase</label>
+                        <select id="dct-txn-phase" class="dct-select">
+                            <?php foreach(PHASES as $phase): ?>
+                                <option value="<?php echo $phase; ?>"><?php echo $phase; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
 
-                <div class="dct-form-group">
-                    <label class="dct-label">Amount (৳) <span class="req">*</span></label>
-                    <input type="number" id="dct-txn-amount" class="dct-input" placeholder="0.00" step="0.01" min="0.01" required>
-                </div>
+                    <div class="dct-form-group">
+                        <label class="dct-label">Amount (৳) <span class="req">*</span></label>
+                        <input type="number" id="dct-txn-amount" class="dct-input" placeholder="0.00" step="0.01" min="0.01" required>
+                    </div>
 
-                <div class="dct-form-group">
-                    <label class="dct-label">Date <span class="req">*</span></label>
-                    <input type="date" id="dct-txn-date" class="dct-input" required>
-                </div>
+                    <div class="dct-form-group">
+                        <label class="dct-label">Date <span class="req">*</span></label>
+                        <input type="date" id="dct-txn-date" class="dct-input" required>
+                    </div>
 
-                <div class="dct-form-group">
-                    <label class="dct-label">Notes / Description</label>
-                    <textarea id="dct-txn-desc" class="dct-textarea" placeholder="Optional notes about this transaction…"></textarea>
-                </div>
+                    <div class="dct-form-group">
+                        <label class="dct-label">Notes / Description</label>
+                        <textarea id="dct-txn-desc" class="dct-textarea" placeholder="Optional notes about this transaction…"></textarea>
+                    </div>
 
-                <div style="display:flex;gap:10px;">
-                    <button type="submit" class="dct-btn dct-btn-accent">Record Transaction</button>
-                    <button type="button" id="dct-txn-cancel" class="dct-btn dct-btn-outline" style="display:none;">Cancel</button>
-                </div>
+                    <div style="display:flex;gap:10px;">
+                        <button type="submit" class="dct-btn dct-btn-accent">Record Transaction</button>
+                        <button type="button" id="dct-txn-cancel" class="dct-btn dct-btn-outline" style="display:none;">Cancel</button>
+                    </div>
             </form>
         </div>
 

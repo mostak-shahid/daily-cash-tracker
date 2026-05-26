@@ -9,7 +9,7 @@ class DCT_Ajax {
             'dct_get_stakeholders', 'dct_save_stakeholder', 'dct_delete_stakeholder',
             'dct_get_project_stakeholders', 'dct_assign_stakeholder', 'dct_unassign_stakeholder',
             'dct_get_transactions', 'dct_save_transaction', 'dct_delete_transaction',
-            'dct_get_summary', 'dct_get_all_summary',
+            'dct_get_summary', 'dct_get_all_summary', 'dct_get_category_costs',
             'dct_export_data',
             'dct_import_prepare', 'dct_import_process', 'dct_import_data',
         );
@@ -17,7 +17,7 @@ class DCT_Ajax {
             add_action( "wp_ajax_{$action}", array( $this, str_replace( 'dct_', '', $action ) ) );
         }
 
-        $public_actions = array( 'dct_get_summary', 'dct_get_all_summary', 'dct_get_stakeholders', 'dct_get_projects' );
+        $public_actions = array( 'dct_get_summary', 'dct_get_all_summary', 'dct_get_category_costs', 'dct_get_stakeholders', 'dct_get_projects' );
         foreach ( $public_actions as $action ) {
             add_action( "wp_ajax_nopriv_{$action}", array( $this, str_replace( 'dct_', '', $action ) ) );
         }
@@ -219,6 +219,63 @@ class DCT_Ajax {
             );
         }
         $this->ok( $result );
+    }
+    public function get_category_costs() {
+        // error_log( 'get_category_costs called with: ' . print_r( $_POST, true ) );
+        // $data = array(
+        //     'Design' => 1200,
+        //     'Development' => 3500,
+        //     'Marketing' => 800,
+        // );
+        // echo json_encode( $_POST );
+        // exit;
+
+        $this->verify();
+        $phase = sanitize_text_field( $_POST['phase'] ?? '' );
+        $project_id = sanitize_text_field( $_POST['project_id'] ?? '' );
+        $date_from = sanitize_text_field( $_POST['date_from'] ?? '' );
+        $date_to = sanitize_text_field( $_POST['date_to'] ?? '' );
+
+        if ( empty( $phase ) ) {
+            $this->err( 'Phase is required.' );
+            return;
+        }
+
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'dct_transactions';
+
+        $query = "SELECT category, SUM(amount) as total_cost FROM {$table_name}";
+        $query .= " WHERE phase = %s AND transaction_type = 'expense'";
+        $args = array( $phase );
+
+        if ( ! empty( $project_id ) ) {
+            $query .= " AND project_id = %d";
+            $args[] = $project_id;
+        }
+
+        if ( ! empty( $date_from ) ) {
+            $query .= " AND transaction_date >= %s";
+            $args[] = $date_from;
+        }
+        if ( ! empty( $date_to ) ) {
+            $query .= " AND transaction_date <= %s";
+            $args[] = $date_to;
+        }
+
+        $query .= " GROUP BY category ORDER BY total_cost DESC";
+
+        $results = $wpdb->get_results( $wpdb->prepare( $query, $args ), ARRAY_A );
+
+        $category_costs = array();
+        if ( ! empty( $results ) ) {
+            foreach ( $results as $row ) {
+                $category_costs[ $row['category'] ] = $row['total_cost'];
+            }
+        }
+        
+        // echo json_encode( $category_costs );
+        // exit;
+        $this->ok( $category_costs );
     }
 
     /* ── Export/Import ── */

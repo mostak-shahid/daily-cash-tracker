@@ -8,6 +8,7 @@
         <div class="dct-tabs">
             <button class="dct-tab active" data-tab="dct-tab-single">Individual Summary</button>
             <button class="dct-tab" data-tab="dct-tab-all">All Stakeholders Overview</button>
+            <button class="dct-tab" data-tab="dct-tab-cost-calculator">Cost Calculator</button>
         </div>
 
         <!-- Individual -->
@@ -67,5 +68,39 @@
                 <div id="dct-all-summary-result"></div>
             </div>
         </div>
-    </div>
+
+        <!-- Cost Calculator -->
+        <div id="dct-tab-cost-calculator" class="dct-tab-pane">
+            <div class="dct-card">
+                <div class="dct-card-title">Cost Calculator</div>
+                <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+                    <div>
+                        <label class="dct-label">Phase</label>
+                        <select id="dct-cost-calculator-phase" class="dct-select">
+                            <?php foreach(PHASES as $phase): ?>
+                                <option value="<?php echo $phase; ?>"><?php echo $phase; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>                  
+
+                    <div>
+                        <label class="dct-label">Filter by Project</label>
+                        <select id="dct-cost-calculator-project" class="dct-select">
+                            <option value="">All Projects</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="dct-label">Date From</label>
+                        <input type="date" id="dct-cost-calculator-date-from" class="dct-input">
+                    </div>
+                    <div>
+                        <label class="dct-label">Date To</label>
+                        <input type="date" id="dct-cost-calculator-date-to" class="dct-input">
+                    </div>
+                    <button id="dct-cost-calculator-btn" class="dct-btn dct-btn-accent">Calculate Costs</button>
+                </d>
+            </div>
+            <div id="dct-cost-calculator-result" style="margin-top:16px;"></div>
+        </div>
+</div>
 </div>

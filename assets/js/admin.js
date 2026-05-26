@@ -485,6 +485,7 @@
                 this.loadSelects();
                 $('#dct-summary-btn').on('click', () => this.load());
                 $('#dct-all-summary-btn').on('click', () => this.loadAll());
+                $('#dct-cost-calculator-btn').on('click', () => this.loadCosts());
             },
 
             loadSelects() {
@@ -496,7 +497,7 @@
                 });
                 DCT_APP.ajax('dct_get_projects', {}, (r) => {
                     if (!r.success) return;
-                    ['#dct-summary-project', '#dct-all-summary-project'].forEach(sel => {
+                    ['#dct-summary-project', '#dct-all-summary-project', '#dct-cost-calculator-project'].forEach(sel => {
                         const $s = $(sel);
                         $s.empty().append('<option value="">All Projects</option>');
                         r.data.forEach(p => $s.append(`<option value="${p.id}">${$('<div>').text(p.name).html()}</option>`));
@@ -603,6 +604,40 @@
                 });
                 html += '</tbody></table></div>';
                 $('#dct-all-summary-result').html(html).show();
+            },
+            loadCosts() {
+                const phase = $('#dct-cost-calculator-phase').val();
+                const project_id = $('#dct-cost-calculator-project').val();
+                const dateFrom = $('#dct-cost-calculator-date-from').val();
+                const dateTo = $('#dct-cost-calculator-date-to').val();
+                // console.log({ phase, project_id, dateFrom, dateTo });
+                DCT_APP.ajax('dct_get_cost_calculator', { phase: phase, project_id: project_id, date_from: dateFrom, date_to: dateTo }, (res) => {
+                    console.log(res);
+                    // if (!res.success) return;
+                    // this.renderCosts(res.data);
+                });
+
+            },
+
+            renderCosts(data) {
+                let html = '';
+                if (data.length) {
+                    html += `<div class="dct-card-title">Cost Breakdown</div>
+                    <div class="dct-table-wrap"><table class="dct-table">
+                    <thead><tr><th>Category</th><th>Phase</th><th>Total Amount</th></tr></thead>
+                    <tbody>`;
+                    data.forEach(row => {
+                        html += `<tr>
+                            <td data-title="Category">${$('<div>').text(row.category || '').html()}</td>
+                            <td data-title="Phase">${$('<div>').text(row.phase || '').html()}</td>
+                            <td data-title="Total Amount" class="dct-amount-out">৳ ${DCT_APP.money(row.total)}</td>
+                        </tr>`;
+                    });
+                    html += '</tbody></table></div>';
+                } else {
+                    html += '<p style="color:#64748b;font-size:14px;">No cost data found.</p>';
+                }
+                $('#dct-cost-calculator-result').html(html).show();
             }
         },
 
