@@ -621,18 +621,24 @@
             renderCosts(data) {
                 // console.log(data.length);
                 let html = '';
+                let grandTotal = 0;
                 if (data.length) {
                     html += `<div class="dct-card-title">Cost Breakdown</div>
                     <div class="dct-table-wrap"><table class="dct-table">
                     <thead><tr><th>Category</th><th>Phase</th><th>Total Amount</th></tr></thead>
                     <tbody>`;
                     data.forEach(row => {
+                        grandTotal += parseFloat(row.total_cost || 0);
                         html += `<tr>
                             <td data-title="Category">${$('<div>').text(row.category || '').html()}</td>
                             <td data-title="Phase">${$('<div>').text(row.phase || '').html()}</td>
                             <td data-title="Total Amount" class="dct-amount-out">৳ ${DCT_APP.money(row.total_cost)}</td>
                         </tr>`;
                     });
+                    html += `<tr>
+                            <td colspan="2">Total</td>
+                            <td data-title="Total Amount" class="dct-amount-out">৳ ${DCT_APP.money(grandTotal)}</td>
+                        </tr>`;
                     html += '</tbody></table></div>';
                 } else {
                     html += '<p style="color:#64748b;font-size:14px;">No cost data found.</p>';
