@@ -17,7 +17,7 @@ class DCT_Ajax {
             add_action( "wp_ajax_{$action}", array( $this, str_replace( 'dct_', '', $action ) ) );
         }
 
-        $public_actions = array( 'dct_get_summary', 'dct_get_all_summary', 'dct_get_category_costs', 'dct_get_stakeholders', 'dct_get_projects' );
+        $public_actions = array( 'dct_get_summary', 'dct_get_all_summary', 'dct_get_stakeholders', 'dct_get_projects' );
         foreach ( $public_actions as $action ) {
             add_action( "wp_ajax_nopriv_{$action}", array( $this, str_replace( 'dct_', '', $action ) ) );
         }
@@ -221,7 +221,7 @@ class DCT_Ajax {
         $this->ok( $result );
     }
     public function get_category_costs() {
-        // error_log( 'get_category_costs called with: ' . print_r( $_POST, true ) );
+        error_log( 'get_category_costs called with: ' . print_r( $_POST, true ) );
         // $data = array(
         //     'Design' => 1200,
         //     'Development' => 3500,
@@ -269,7 +269,12 @@ class DCT_Ajax {
         $category_costs = array();
         if ( ! empty( $results ) ) {
             foreach ( $results as $row ) {
-                $category_costs[ $row['category'] ] = $row['total_cost'];
+                // $category_costs[ $row['category'] ] = $row['total_cost'];
+                $category_costs[] = array(
+                    'category' => $row['category'],
+                    'phase' => $phase,
+                    'total_cost' => floatval( $row['total_cost'] ),
+                );
             }
         }
         

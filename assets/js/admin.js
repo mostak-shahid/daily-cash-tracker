@@ -611,15 +611,15 @@
                 const dateFrom = $('#dct-cost-calculator-date-from').val();
                 const dateTo = $('#dct-cost-calculator-date-to').val();
                 // console.log({ phase, project_id, dateFrom, dateTo });
-                DCT_APP.ajax('dct_get_cost_calculator', { phase: phase, project_id: project_id, date_from: dateFrom, date_to: dateTo }, (res) => {
-                    console.log(res);
-                    // if (!res.success) return;
-                    // this.renderCosts(res.data);
+                DCT_APP.ajax('dct_get_category_costs', { phase: phase, project_id: project_id, date_from: dateFrom, date_to: dateTo }, (res) => {
+                    // console.log(res);
+                    if (!res.success) return;
+                    this.renderCosts(res.data);
                 });
 
             },
-
             renderCosts(data) {
+                // console.log(data.length);
                 let html = '';
                 if (data.length) {
                     html += `<div class="dct-card-title">Cost Breakdown</div>
@@ -630,7 +630,7 @@
                         html += `<tr>
                             <td data-title="Category">${$('<div>').text(row.category || '').html()}</td>
                             <td data-title="Phase">${$('<div>').text(row.phase || '').html()}</td>
-                            <td data-title="Total Amount" class="dct-amount-out">৳ ${DCT_APP.money(row.total)}</td>
+                            <td data-title="Total Amount" class="dct-amount-out">৳ ${DCT_APP.money(row.total_cost)}</td>
                         </tr>`;
                     });
                     html += '</tbody></table></div>';
